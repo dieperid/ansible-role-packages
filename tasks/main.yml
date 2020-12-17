@@ -1,0 +1,30 @@
+---
+- name: Setting distribution fact for non Debian based distribution
+  set_fact:
+    distribution: "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}"
+  when: ansible_os_family != 'Debian'
+
+- name: Setting distribution fact for Debian based distribution
+  set_fact:
+    distribution: "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}"
+  when: ansible_os_family == 'Debian'
+
+- name: Include variable file for {{ distribution }}
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ distribution }}.yml"
+
+- name: Install base packages with apt for {{ distribution }}
+  apt: 
+    name: "{{ basePackages }}"
+    update_cache: true
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install extra packages with apt for {{ distribution }}
+  apt: 
+    name: "{{ extraPackages }}"
+    update_cache: true
+    state: present
+  when: ansible_os_family == 'Debian'
+

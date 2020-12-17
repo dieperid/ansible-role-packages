@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  author: Anthony Dieperink
+  description: Install a list of packages
+  license: MIT
+  min_ansible_version: 2.9
+
+  platforms:
+  - name: Debian
+    versions:
+      - buster
+  galaxy_tags:
+    - apt
+
