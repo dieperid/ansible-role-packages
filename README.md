@@ -10,6 +10,8 @@ Ansible role for install a list of packages on a linux machine
       include_role:
         name: ansible-role-packages
       vars:
-        extraPackages:
+        installExtraPackages:
           - nmon
+        removeExtraPackages:
+          - htop
 ```
