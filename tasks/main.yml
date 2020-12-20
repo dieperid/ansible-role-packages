@@ -19,21 +19,21 @@
     name: "{{ basePackages }}"
     update_cache: true
     state: present
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian' and basePackages is defined
 
 - name: Install extra packages with apt for {{ distribution }}
   apt: 
     name: "{{ installExtraPackages }}"
     update_cache: true
     state: present
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian' and installExtraPackages is defined
 
 - name: Remove extra packages with apt for {{ distribution }}
   apt: 
     name: "{{ removeExtraPackages }}"
     update_cache: true
     state: absent
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian' and removeExtraPackages is defined
 
 - name: Hold extra packages
   dpkg_selections:
@@ -41,3 +41,4 @@
     selection: hold
   with_items:
     - "{{ holdExtraPackages }}"
+  when: ansible_os_family == 'Debian' and holdExtraPackages is defined
