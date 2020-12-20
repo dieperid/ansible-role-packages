@@ -35,3 +35,9 @@
     state: absent
   when: ansible_os_family == 'Debian'
 
+- name: Hold extra packages
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  with_items:
+    - "{{ holdExtraPackages }}"
