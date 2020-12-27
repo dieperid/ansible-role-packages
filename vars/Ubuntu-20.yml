@@ -1,0 +1,14 @@
+---
+basePackages:
+  - apt-transport-https
+  - vim
+  - gnupg2
+  - rsync
+  - wget
+  - git
+  - zip
+  - unzip
+  - curl
+  - dmidecode
+  - nfs-common
+

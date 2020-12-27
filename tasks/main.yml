@@ -14,6 +14,45 @@
   with_first_found:
     - "{{ distribution }}.yml"
 
+## Update packages
+- name: Unhold system packages with apt for {{ distribution }}
+  shell: apt-mark unhold "{{ unholdExtraPackages }}"
+  args:
+    executable: /bin/bash
+  when:
+    ansible_os_family == 'Debian' 
+    and 
+    updateSystemPackages is defined 
+    and 
+    unholdExtraPackages is defined
+    and
+    unholdExtraPackages|length > 0
+
+- name: Update all system packages to their latest version with apt for {{ distribution }}
+  apt:
+    name: "*"
+    update_cache: yes
+    state: latest
+  when: 
+    ansible_os_family == 'Debian' 
+    and 
+    updateSystemPackages is defined 
+    and 
+    updateSystemPackages == "all"
+
+- name: Update {{ updateSystemPackages }} system packages to their latest version with apt for {{ distribution }}
+  apt:
+    name: "{{ updateSystemPackages }}"
+    update_cache: yes
+    state: latest
+  when: 
+    ansible_os_family == 'Debian' 
+    and 
+    updateSystemPackages is defined 
+    and 
+    updateSystemPackages != "all"
+
+## Install and manage packages
 - name: Install base packages with apt for {{ distribution }}
   apt: 
     name: "{{ basePackages }}"
@@ -35,7 +74,7 @@
     state: absent
   when: ansible_os_family == 'Debian' and removeExtraPackages is defined
 
-- name: Hold extra packages
+- name: Hold extra packages with dpkg for {{ distribution }}
   dpkg_selections:
     name: "{{ item }}"
     selection: hold
