@@ -25,24 +25,25 @@ ansible-galaxy install -f -r ./roles/requirements.yml --roles-path=./roles
       include_role:
         name: ansible-role-packages
       vars:
-        installExtraPackages:
-          - nmon
-        removeExtraPackages:
-          - htop
-        holdExtraPackages:
-          - kubelet
 
-        unholdExtraPackages:
-          - kubelet
+        packages:
+          install:
+            - nmon
+          remove:
+            - htop
+          hold:
+           - kubelet
+          unhold:
+            - kubelet
 
-        # first option (Update all packages on the system)
-        updateSystemPackages: all
-        
-        # second option (Update selected packages on the system)
-        updateSystemPackages:
-          - kubelet
-        
-        # third option (Same as the second option but with version indication)
-        updateSystemPackages:
-          - kubelet=1.20.1-00
+          # first option (Update all packages on the system)
+          update: all
+
+          # second option (Update selected packages on the system)
+          update:
+            - kubelet
+
+          # third option (Same as the second option but with version indication)
+          update:
+            - kubelet=1.20.1-00
 ```

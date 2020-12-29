@@ -16,17 +16,17 @@
 
 ## Update packages
 - name: Unhold system packages with apt for {{ distribution }}
-  shell: apt-mark unhold "{{ unholdExtraPackages }}"
+  shell: apt-mark unhold "{{ packages.unhold }}"
   args:
     executable: /bin/bash
   when:
     ansible_os_family == 'Debian' 
     and 
-    updateSystemPackages is defined 
+    packages['update'] is defined 
     and 
-    unholdExtraPackages is defined
+    packages['unhold'] is defined
     and
-    unholdExtraPackages|length > 0
+    packages['unhold']|length > 0
 
 - name: Update all system packages to their latest version with apt for {{ distribution }}
   apt:
@@ -36,21 +36,20 @@
   when: 
     ansible_os_family == 'Debian' 
     and 
-    updateSystemPackages is defined 
+    packages['update'] is defined 
     and 
-    updateSystemPackages == "all"
+    packages['update'] == "all"
 
-- name: Update {{ updateSystemPackages }} system packages to their latest version with apt for {{ distribution }}
+- name: Update {{ packages.update }} system packages to their latest version with apt for {{ distribution }}
   apt:
-    name: "{{ updateSystemPackages }}"
+    name: "{{ packages.update }}"
     update_cache: yes
-    state: latest
   when: 
     ansible_os_family == 'Debian' 
     and 
-    updateSystemPackages is defined 
+    packages['update'] is defined 
     and 
-    updateSystemPackages != "all"
+    packages['update'] != "all"
 
 ## Install and manage packages
 - name: Install base packages with apt for {{ distribution }}
@@ -58,26 +57,38 @@
     name: "{{ basePackages }}"
     update_cache: true
     state: present
-  when: ansible_os_family == 'Debian' and basePackages is defined
+  when: 
+    ansible_os_family == 'Debian' 
+    and 
+    basePackages is defined
 
 - name: Install extra packages with apt for {{ distribution }}
   apt: 
-    name: "{{ installExtraPackages }}"
+    name: "{{ packages.install }}"
     update_cache: true
     state: present
-  when: ansible_os_family == 'Debian' and installExtraPackages is defined
+  when: 
+    ansible_os_family == 'Debian' 
+    and 
+    packages['install'] is defined
 
 - name: Remove extra packages with apt for {{ distribution }}
   apt: 
-    name: "{{ removeExtraPackages }}"
+    name: "{{ packages.remove }}"
     update_cache: true
     state: absent
-  when: ansible_os_family == 'Debian' and removeExtraPackages is defined
+  when: 
+    ansible_os_family == 'Debian' 
+    and 
+    packages['remove'] is defined
 
 - name: Hold extra packages with dpkg for {{ distribution }}
   dpkg_selections:
     name: "{{ item }}"
     selection: hold
   with_items:
-    - "{{ holdExtraPackages }}"
-  when: ansible_os_family == 'Debian' and holdExtraPackages is defined
+    - "{{ packages.hold }}"
+  when: 
+    ansible_os_family == 'Debian' 
+    and 
+    packages['hold'] is defined
